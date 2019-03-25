@@ -32,7 +32,7 @@ namespace App.Security
 
         private static void PreventXss(HttpContext context)
         {
-            Csp.ApplyCsp(context);
+            // Csp.ApplyCsp(context);
             context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
             context.Response.Headers.Add("X-Content-Type-Options", "NOSNIFF");
             context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");

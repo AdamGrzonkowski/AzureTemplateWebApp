@@ -1,26 +1,52 @@
-﻿using System.Web.Mvc;
+﻿using Application.Model.Notifications;
+using Helper.Common.Configuration;
+using Helper.Common.Http;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Caching;
+using System.Web.Mvc;
 
 namespace App.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        private readonly IRestService<NotificationResponseDto> _service;
+        private readonly IConfiguration _config;
+
+        public HomeController(IRestService<NotificationResponseDto> restService, IConfiguration config)
         {
-            return View();
+            _service = restService;
+            _config = config;
         }
 
-        public ActionResult About()
+        public async Task<ActionResult> Index()
         {
-            ViewBag.Message = "Your application description page.";
+            const string cacheKey = "nck";
+            var model = HttpContext.Cache.Get(cacheKey) as IList<NotificationDto>;
 
-            return View();
-        }
+            if (model == null)
+            {
+                var dt = DateTime.Now;
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
+                var dateTimeOffsetNow = new DateTimeOffset(dt);
+                var unixDateTimeNow = dateTimeOffsetNow.ToUnixTimeMilliseconds();
 
-            return View();
+                var dateTimeOffsetMonthBefore = new DateTimeOffset(dt).AddMonths(-1);
+                var unixDateTimeFrom = dateTimeOffsetMonthBefore.ToUnixTimeMilliseconds();
+
+                string uri = $"{_config.BaseApiAddress}{_config.GetRequestsUri}" +
+                             "?id=28dc65ad-fff5-447b-99a3-95b71b4a7d1e" +
+                             $"&dateFrom={unixDateTimeFrom}" +
+                             $"&dateTo={unixDateTimeNow}" +
+                             $"&apikey={_config.ApiKeyUmWarszawa}";
+
+                model = (await _service.GetAsync(uri))?.result.result.notifications;
+                // store in cache for some time, to limit external calls;
+                HttpContext.Cache.Add(cacheKey, model, null, DateTime.Now.AddMinutes(5),Cache.NoSlidingExpiration,CacheItemPriority.Normal,null);
+            }
+
+            return View(model);
         }
     }
 }

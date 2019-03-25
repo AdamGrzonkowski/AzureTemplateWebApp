@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Application.Model.Notifications
 {
@@ -17,7 +18,7 @@ namespace Application.Model.Notifications
         public string category { get; set; }
         public string subcategory { get; set; }
         public string Event { get; set; }
-        public long? createDate { get; set; }
+        public DateTime? createDate { get; set; }
         public string notificationNumber { get; set; }
         public double? xCoordWGS84 { get; set; }
         public double? yCoordWGS84 { get; set; }

@@ -58,6 +58,7 @@
     <Compile Include="Http\IHttpHandler.cs" />
     <Compile Include="Http\IRestService.cs" />
     <Compile Include="Http\RestService.cs" />
+    <Compile Include="Json\UnixDateTimeConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

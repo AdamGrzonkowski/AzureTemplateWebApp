@@ -1,4 +1,5 @@
-﻿using App.Security;
+﻿using App.App_Start.IoC;
+using App.Security;
 using log4net;
 using System;
 using System.Web;
@@ -18,6 +19,7 @@ namespace App
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            Container.Build();
         }
 
         protected void Application_PreSendRequestHeaders(object sender, EventArgs e)

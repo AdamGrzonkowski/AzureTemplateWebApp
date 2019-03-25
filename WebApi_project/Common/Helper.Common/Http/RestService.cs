@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Helper.Common.Json;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace Helper.Common.Http
@@ -19,7 +20,7 @@ namespace Helper.Common.Http
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return JsonConvert.DeserializeObject<TDto>(content);
+                return JsonConvert.DeserializeObject<TDto>(content, new UnixDateTimeConverter());
             }
 
             return null;
