@@ -6,6 +6,12 @@
     public interface IConfiguration
     {
         /// <summary>
+        /// Api key used to query http://api.um.warszawa.pl/api
+        /// </summary>
+        string ApiKeyUmWarszawa { get; }
+
+
+        /// <summary>
         /// Base address of Api in the format
         /// protocol:ip/dns:port/
         /// </summary>
@@ -14,6 +20,6 @@
         /// <summary>
         /// Uri of Post method on Requests controller.
         /// </summary>
-        string PostRequestsUri { get; }
+        string GetRequestsUri { get; }
     }
 }

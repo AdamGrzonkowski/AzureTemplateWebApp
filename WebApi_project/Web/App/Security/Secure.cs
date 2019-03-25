@@ -43,6 +43,7 @@ namespace App.Security
         {
             context.Response.Headers.Remove("Server");
             context.Response.Headers.Remove("X-AspNet-Version");
+            context.Response.Headers.Remove("X-AspNetMvc-Version");
             context.Response.Headers.Remove("X-Powered-By");
         }
     }

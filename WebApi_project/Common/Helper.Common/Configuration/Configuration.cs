@@ -2,9 +2,11 @@
 {
     public class Configuration : IConfiguration
     {
+        public string ApiKeyUmWarszawa => ConfigurationManagerHelper.ReadConfig(ConfigKey.ApiKey);
+
         /// <inheritdoc />
         public string BaseApiAddress => ConfigurationManagerHelper.ReadConfig(ConfigKey.ApiBaseAddress);
         /// <inheritdoc />
-        public string PostRequestsUri => ConfigurationManagerHelper.ReadConfig(ConfigKey.PostRequestsUri);
+        public string GetRequestsUri => ConfigurationManagerHelper.ReadConfig(ConfigKey.GetRequestsUri);
     }
 }

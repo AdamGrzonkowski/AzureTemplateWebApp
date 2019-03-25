@@ -6,6 +6,12 @@ namespace Test.Common.Configuration
     public class ConfigKeyTest
     {
         [Fact]
+        public void ApiKeyHasCorrectKeyTest()
+        {
+            Assert.Equal("ApiKey", ConfigKey.ApiKey);
+        }
+
+        [Fact]
         public void ApiBaseAddressHasCorrectKeyTest()
         {
             Assert.Equal("ApiBaseAddress", ConfigKey.ApiBaseAddress);
@@ -14,7 +20,7 @@ namespace Test.Common.Configuration
         [Fact]
         public void PostRequestsUriHasCorrectKeyTest()
         {
-            Assert.Equal("PostRequestsUri", ConfigKey.PostRequestsUri);
+            Assert.Equal("GetRequestsUri", ConfigKey.GetRequestsUri);
         }
     }
 }
