@@ -1,0 +1,144 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Base name of the resource such as web app name and app service plan "
+      },
+      "minLength": 2
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "metadata": {
+        "description": "The SKU of App Service Plan, by defaut is Free F1"
+      },
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    "environment": {
+      "type": "string",
+      "defaultValue": "dev",
+      "metadata": {
+        "description": "Environment type to which app is being deployed"
+      },
+      "allowedValues": [
+        "dev",
+        "test",
+        "prod"
+      ]
+    },
+    "serviceOwner": {
+      "type": "string",
+      "metadata": {
+        "description": "Tag specifying service owner, which will be attached to resource"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "_artifactsLocation": {
+      "type": "string"
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
+    },
+    "ApiWithArmTemplateAppPackageFolder": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "WebDeploy package location. This path is relative to the _artifactsLocation parameter"
+      }
+    },
+    "ApiWithArmTemplateAppPackageFileName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the webdeploy package"
+      }
+    }
+  },
+  "variables": {
+    "webAppPortalName": "[concat(parameters('webAppName'), '-webapp')]",
+    "appServicePlanName": "[concat('AppServicePlan-', parameters('webAppName'))]",
+    "environment_type": "[parameters('environment')]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-08-01",
+      "type": "Microsoft.Web/serverfarms",
+      "kind": "app",
+      "name": "[variables('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "properties": {},
+      "dependsOn": [],
+      "sku": {
+        "name": "[parameters('sku')]"
+      }
+    },
+    {
+      "apiVersion": "2017-08-01",
+      "type": "Microsoft.Web/sites",
+      "kind": "app",
+      "name": "[variables('webAppPortalName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ],
+      "resources": [
+        {
+          "name": "MSDeploy",
+          "type": "extensions",
+          "location": "[parameters('location')]",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
+          ],
+          "tags": {
+            "displayName": "ApiWithArmTemplateApp",
+            "serviceOwner": "[parameters('serviceOwner')]"
+          },
+          "properties": {
+            "packageUri": "[concat(parameters('_artifactsLocation'), '/', parameters('ApiWithArmTemplateAppPackageFolder'), '/', parameters('ApiWithArmTemplateAppPackageFileName'), parameters('_artifactsLocationSasToken'))]",
+            "dbType": "None",
+            "connectionString": "",
+            "setParameters": {
+              "IIS Web Application Name": "[variables('webAppPortalName')]"
+            }
+          }
+        },
+        {
+          "name": "appSettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('webAppPortalName'))]"
+          ],
+          "tags": {
+            "displayName": "appSettings"
+          },
+          "properties": {
+            "WarsawApiUrl": "http://api.um.warszawa.pl/api/action/"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -12,9 +12,9 @@ namespace Test.Common.Configuration
         }
 
         [Fact]
-        public void ApiBaseAddressHasCorrectKeyTest()
+        public void WarsawApiUrlHasCorrectKeyTest()
         {
-            Assert.Equal("ApiBaseAddress", ConfigKey.ApiBaseAddress);
+            Assert.Equal("WarsawApiUrl", ConfigKey.WarsawApiUrl);
         }
 
         [Fact]
