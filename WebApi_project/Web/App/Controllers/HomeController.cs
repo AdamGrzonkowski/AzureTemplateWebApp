@@ -37,8 +37,8 @@ namespace App.Controllers
                     var dateTimeOffsetNow = new DateTimeOffset(dt);
                     var unixDateTimeNow = dateTimeOffsetNow.ToUnixTimeMilliseconds();
 
-                    var dateTimeOffsetMonthBefore = new DateTimeOffset(dt).AddMonths(-1);
-                    var unixDateTimeFrom = dateTimeOffsetMonthBefore.ToUnixTimeMilliseconds();
+                    var dateTimeOffsetBefore = new DateTimeOffset(dt).AddHours(-6);
+                    var unixDateTimeFrom = dateTimeOffsetBefore.ToUnixTimeMilliseconds();
 
                     string uri = $"{_config.BaseApiAddress}{_config.GetRequestsUri}" +
                                  "?id=28dc65ad-fff5-447b-99a3-95b71b4a7d1e" +
@@ -48,6 +48,7 @@ namespace App.Controllers
 
                     model = (await _service.GetAsync(uri))?.result.result.notifications;
                     // store in cache for some time, to limit external calls;
+                    // normally we'd store that data in our database, to save bandwidth
                     HttpContext.Cache.Add(cacheKey, model, null, DateTime.Now.AddMinutes(5), Cache.NoSlidingExpiration,
                         CacheItemPriority.Normal, null);
                 }
